@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusOS — Personal Execution System</title>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Clean Top Navigation -->
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <div>
+          <div class="brand-title">FocusOS</div>
+          <div class="brand-desc">Personal Operating System</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <!-- Countdown Pill -->
+        <div class="status-pill" id="countdownTimer">
+          Loading countdown...
+        </div>
+
+        <!-- Native Village Mode Toggle -->
+        <button id="nativeModeToggle" class="btn">
+          <i data-lucide="compass" style="width: 14px; height: 14px; color: var(--accent);"></i>
+          <span>Native Mode: <b id="nativeModeStatus" style="color: var(--text-muted);">OFF</b></span>
+        </button>
+
+        <!-- Gemini API Setup -->
+        <button id="openApiSettingsBtn" class="btn" title="Setup Gemini Dual Keys">
+          <i data-lucide="key" style="width: 14px; height: 14px; color: var(--accent);"></i>
+          <span>Gemini Keys</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Native Village Travel Notice -->
+    <div id="nativeAlertBox" style="display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 14px; padding: 1.15rem 1.5rem; margin-bottom: 2.5rem; align-items: center; justify-content: space-between;">
+      <div>
+        <strong style="color: #1e40af; font-size: 0.9375rem;">Native Village Mode Active (3–4 Day Travel Protocol)</strong>
+        <p style="font-size: 0.84375rem; color: #1e3a8a; margin-top: 0.2rem;">Laptop coding paused. Focus on 15 minutes of mobile audio drills and LMS mental review so your streak stays alive.</p>
+      </div>
+      <button id="disableNativeAlertBtn" class="btn" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">Exit Mode</button>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 1: TODAY'S EXECUTION CHECKLIST -->
+    <!-- ========================================================================= -->
+    <section>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+          <div>
+            <h2 class="card-title">
+              <i data-lucide="check-circle" style="width: 20px; height: 20px; color: var(--accent);"></i>
+              Today's Execution Checklist
+            </h2>
+            <p class="card-subtitle" style="margin-bottom: 0;">Complete these 4 reps before sleeping to maintain steady momentum.</p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;" id="confidenceScoreVal">0%</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;" id="confidenceLevel">Ready to start</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-bg">
+          <div id="confidenceBar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+
+        <!-- The 4 Checkboxes -->
+        <div class="todo-list">
+          
+          <label class="todo-item" for="rep-lms">
+            <input type="checkbox" id="rep-lms" class="custom-checkbox">
+            <div class="todo-content">
+              <div class="todo-title">1. Office LMS Machine Learning</div>
+              <div class="todo-desc" id="lmsTaskDesc">Inspect the Pandas data pipeline or run LightGBM/Prophet scripts. Understand the code inputs and outputs.</div>
+            </div>
+          </label>
+
+          <label class="todo-item" for="rep-udemy">
+            <input type="checkbox" id="rep-udemy" class="custom-checkbox">
+            <div class="todo-content">
+              <div class="todo-title">2. Udemy Track: Docker & Advanced AI</div>
+              <div class="todo-desc">30 minutes on Docker, Reflection Agents, Agentic RAG, or MCP. Write one snippet from memory.</div>
+            </div>
+          </label>
+
+          <label class="todo-item" for="rep-english">
+            <input type="checkbox" id="rep-english" class="custom-checkbox">
+            <div class="todo-content">
+              <div class="todo-title">3. 60-Second English Speaking Gym</div>
+              <div class="todo-desc">Speak 1 concept out loud using: Problem → Approach → Result → Next Step. Build fluent meeting poise.</div>
+            </div>
+          </label>
+
+          <label class="todo-item" for="rep-code">
+            <input type="checkbox" id="rep-code" class="custom-checkbox">
+            <div class="todo-content">
+              <div class="todo-title">4. Idea Discipline & Mindset</div>
+              <div class="todo-desc">Avoid opening new side projects today. Deposit any distracting ideas into the Backlog Vault below.</div>
+            </div>
+          </label>
+
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+          <button id="resetDailyBtn" class="btn" style="font-size: 0.75rem; padding: 0.35rem 0.85rem;">
+            Reset Daily Reps
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 2: 60-SECOND ENGLISH SPEAKING DRILL -->
+    <!-- ========================================================================= -->
+    <section class="section-gap">
+      <div class="card">
+        <h2 class="card-title">
+          <i data-lucide="mic" style="width: 20px; height: 20px; color: var(--accent);"></i>
+          60-Second English Speaking Gym
+        </h2>
+        <p class="card-subtitle">Train yourself to articulate technical choices without getting tongue-tied or going blank in meetings (Page 28).</p>
+
+        <!-- 4 Step Guide -->
+        <div class="four-steps-grid">
+          <div class="step-item">
+            <div class="step-label">Step 1 (15s)</div>
+            <div class="step-name">Problem</div>
+            <div class="step-desc">"The issue we faced..."</div>
+          </div>
+          <div class="step-item">
+            <div class="step-label">Step 2 (20s)</div>
+            <div class="step-name">Approach</div>
+            <div class="step-desc">"I solved it using..."</div>
+          </div>
+          <div class="step-item">
+            <div class="step-label">Step 3 (15s)</div>
+            <div class="step-name">Result</div>
+            <div class="step-desc">"This reduced/improved..."</div>
+          </div>
+          <div class="step-item">
+            <div class="step-label">Step 4 (10s)</div>
+            <div class="step-name">Next Step</div>
+            <div class="step-desc">"Next, we are..."</div>
+          </div>
+        </div>
+
+        <!-- Stopwatch Area -->
+        <div class="gym-stage">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 600; margin-bottom: 0.5rem;">
+            Active Practice Question
+          </div>
+          <div id="drillPrompt" class="speech-prompt-text">
+            "Explain why we selected LightGBM instead of standard Random Forest for the office LMS system."
+          </div>
+
+          <div class="timer-num" id="gymTimerDisplay">60</div>
+
+          <div style="display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1.75rem;">
+            <button id="startTimerBtn" class="btn btn-primary">
+              <i data-lucide="play" style="width: 15px; height: 15px;"></i> Start 60s Drill
+            </button>
+            <button id="resetTimerBtn" class="btn">Reset</button>
+            <button id="nextPromptBtn" class="btn">
+              <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> New Prompt
+            </button>
+          </div>
+
+          <!-- Notes & Gemini Evaluation -->
+          <div style="max-width: 580px; margin: 0 auto; text-align: left; padding-top: 1.25rem; border-top: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary);">Rough points spoken (for AI evaluation):</span>
+              <button id="speechMicBtn" style="background: transparent; border: none; color: var(--accent); font-size: 0.78125rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;">
+                <i data-lucide="mic" style="width: 14px; height: 14px;"></i> Use Mic
+              </button>
+            </div>
+            <textarea id="drillNotes" rows="2" class="input-field" placeholder="e.g. In the LMS, Random Forest had slow training. I picked LightGBM for histogram speed. We got 3x faster training. Next is API..."></textarea>
+            
+            <div style="display: flex; justify-content: flex-end;">
+              <button id="critiqueDrillBtn" class="btn btn-primary" style="font-size: 0.78125rem; padding: 0.4rem 0.9rem;">
+                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> Get Gemini Feedback
+              </button>
+            </div>
+
+            <div id="drillFeedbackBox" style="display: none; margin-top: 1rem; padding: 1.25rem; background: #ffffff; border: 1px solid var(--border); border-radius: 12px; font-size: 0.84375rem; line-height: 1.55; box-shadow: 0 1px 3px rgba(0,0,0,0.03);"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 3: OFFICE LMS QUICK REFERENCE -->
+    <!-- ========================================================================= -->
+    <section class="section-gap">
+      <div class="card">
+        <h2 class="card-title">
+          <i data-lucide="cpu" style="width: 20px; height: 20px; color: var(--accent);"></i>
+          Office LMS Machine Learning Cheatsheet
+        </h2>
+        <p class="card-subtitle">Keep these 3 models crystal clear so you can explain them effortlessly in office meetings (Pages 20–25).</p>
+
+        <div class="model-grid">
+          
+          <!-- LightGBM -->
+          <div class="model-box">
+            <div class="model-name">LightGBM</div>
+            <div class="model-tag">Gradient Boosted Trees</div>
+            <div class="model-point"><strong>Mechanism:</strong> Builds trees sequentially to correct previous errors.</div>
+            <div class="model-point"><strong>Why used:</strong> Extremely fast on tabular license rows; low memory usage.</div>
+            <div class="model-point"><strong>Output:</strong> Risk probability of license shortage.</div>
+          </div>
+
+          <!-- Prophet -->
+          <div class="model-box">
+            <div class="model-name">Facebook Prophet</div>
+            <div class="model-tag">Time-Series Forecasting</div>
+            <div class="model-point"><strong>Requirement:</strong> Strictly needs columns named <code>ds</code> (date) and <code>y</code> (value).</div>
+            <div class="model-point"><strong>Pattern:</strong> Models weekly weekend dips and recurring renewals.</div>
+            <div class="model-point"><strong>Output:</strong> Future license consumption forecast curve.</div>
+          </div>
+
+          <!-- Random Forest -->
+          <div class="model-box">
+            <div class="model-name">Random Forest</div>
+            <div class="model-tag">Bagging Ensemble</div>
+            <div class="model-point"><strong>Mechanism:</strong> Hundreds of independent trees voting together in parallel.</div>
+            <div class="model-point"><strong>Benefit:</strong> Solid default baseline, very hard to overfit.</div>
+            <div class="model-point"><strong>Output:</strong> Baseline classification or regression vote.</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 4: THE IDEA NARROWING VAULT -->
+    <!-- ========================================================================= -->
+    <section class="section-gap">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+          <div>
+            <h2 class="card-title">
+              <i data-lucide="archive" style="width: 20px; height: 20px; color: var(--accent);"></i>
+              Project Idea Vault
+            </h2>
+            <p class="card-subtitle" style="margin-bottom: 0;">Preserves all concepts from your 52-page roadmap so you stay focused on today's LMS tasks without forgetting your future goals.</p>
+          </div>
+          <button id="addIdeaModalBtn" class="btn" style="font-size: 0.78125rem; padding: 0.4rem 0.9rem;">
+            <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Idea
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+          
+          <!-- Icebox -->
+          <div style="background: #fafafa; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;">
+            <div style="font-size: 0.875rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;">📋 The Icebox (Next Up)</div>
+            <div style="font-size: 0.78125rem; color: var(--text-muted); margin-bottom: 1.25rem;">Products to build after the LMS is completed</div>
+            <div id="lane-icebox" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+          </div>
+
+          <!-- Horizon -->
+          <div style="background: #fafafa; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;">
+            <div style="font-size: 0.875rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;">🚀 2027+ Horizon (Moonshots)</div>
+            <div style="font-size: 0.78125rem; color: var(--text-muted); margin-bottom: 1.25rem;">Robotics (Jan 1), Custom Language, Foundation Models</div>
+            <div id="lane-horizon" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: DUAL GEMINI KEYS -->
+  <div id="apiSettingsModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--text-primary);">Dual Gemini API Keys</h3>
+        <button id="closeApiSettingsBtn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </button>
+      </div>
+      <p style="font-size: 0.84375rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
+        Add keys from your two Google accounts. If Key 1 hits limits, it automatically switches to Key 2. Keys stay safely in your browser.
+      </p>
+
+      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Google Account 1 Key (Primary)</label>
+      <input type="password" id="geminiKey1" class="input-field" placeholder="AIzaSy...">
+
+      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Google Account 2 Key (Backup)</label>
+      <input type="password" id="geminiKey2" class="input-field" placeholder="AIzaSy...">
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+        <button id="saveApiKeysBtn" class="btn btn-primary" style="font-size: 0.84375rem;">Save Keys</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD IDEA -->
+  <div id="addIdeaModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--text-primary);">Deposit Idea to Vault</h3>
+        <button id="closeIdeaModalBtn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </button>
+      </div>
+      <p style="font-size: 0.84375rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
+        Store the idea so your brain can let go and stay 100% focused on today's LMS tasks.
+      </p>
+
+      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Idea Title</label>
+      <input type="text" id="newIdeaTitle" class="input-field" placeholder="e.g. Resume AI Agent">
+
+      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Description</label>
+      <textarea id="newIdeaDesc" rows="2" class="input-field" placeholder="What does it do?"></textarea>
+
+      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Vault Lane</label>
+      <select id="newIdeaLane" class="input-field">
+        <option value="icebox">📋 The Icebox (Post-LMS)</option>
+        <option value="horizon">🚀 2027+ Horizon (Robotics, New Language)</option>
+      </select>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+        <button id="saveNewIdeaBtn" class="btn btn-primary" style="font-size: 0.84375rem;">Save Idea</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
