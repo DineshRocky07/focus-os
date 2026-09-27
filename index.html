@@ -1,348 +1,1213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FocusOS — Personal Execution System</title>
-  <meta name="theme-color" content="#2563eb">
-  <link rel="manifest" href="manifest.json">
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusOS - Personal Execution System</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #FFFFFF;
+            --card-bg: #F9FAFB;
+            --border-color: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --accent: #4F46E5;
+            --accent-hover: #4338CA;
+            --alert-bg: #EFF6FF;
+            --alert-text: #1D4ED8;
+            --border-radius-card: 12px;
+            --border-radius-btn: 8px;
+            --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Container & Layout */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px 64px 24px;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        .header-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .pill {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: var(--font-mono);
+        }
+
+        /* Buttons */
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: var(--border-radius-btn);
+            padding: 8px 16px;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--card-bg);
+        }
+        
+        .btn-icon {
+            padding: 8px;
+        }
+
+        /* Sections */
+        section {
+            margin-top: 48px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-card);
+            padding: 32px;
+            margin-bottom: 16px;
+        }
+
+        /* Checklist */
+        .progress-container {
+            margin-bottom: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .confidence-val {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .confidence-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .progress-bar-bg {
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: var(--border-radius-card);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: var(--accent);
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        .checklist-item.checked .custom-checkbox {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .custom-checkbox i {
+            color: white;
+            width: 12px;
+            height: 12px;
+            display: none;
+        }
+
+        .checklist-item.checked .custom-checkbox i {
+            display: block;
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .checklist-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .checklist-desc {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .checklist-item.checked .checklist-title,
+        .checklist-item.checked .checklist-desc {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .reset-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        /* Alerts */
+        .alert {
+            background-color: var(--alert-bg);
+            border: 1px solid #BFDBFE;
+            color: var(--alert-text);
+            padding: 16px 24px;
+            border-radius: var(--border-radius-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .alert.active {
+            display: flex;
+        }
+
+        /* Gym Section */
+        .gym-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .gym-step {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-card);
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .gym-step-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.875rem;
+        }
+        
+        .gym-step-time {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+        }
+
+        .practice-area {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-card);
+            padding: 32px;
+        }
+        
+        .practice-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .practice-prompt {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .timer-display {
+            font-family: var(--font-mono);
+            font-size: 4rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1;
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        textarea {
+            width: 100%;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-btn);
+            padding: 12px;
+            font-family: var(--font-family);
+            font-size: 0.875rem;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 12px;
+        }
+        
+        textarea:focus {
+            outline: 2px solid var(--accent);
+            border-color: transparent;
+        }
+        
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .feedback-box {
+            margin-top: 16px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-btn);
+            padding: 16px;
+            font-size: 0.875rem;
+            display: none;
+            white-space: pre-wrap;
+        }
+
+        /* ML Cheatsheet */
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .cs-card {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-card);
+            padding: 24px;
+        }
+        
+        .cs-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cs-list {
+            list-style: none;
+            font-size: 0.875rem;
+        }
+        
+        .cs-list li {
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cs-list span.label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* Idea Vault */
+        .vault-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .vault-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .lane-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .idea-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .idea-card {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-btn);
+            padding: 16px;
+        }
+        
+        .idea-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .idea-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(17, 24, 39, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--border-radius-card);
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(20px);
+            transition: transform 0.2s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-btn);
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+        
+        .form-input:focus {
+            outline: 2px solid var(--accent);
+            border-color: transparent;
+        }
+        
+        .modal-footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-right .pill {
+                display: none;
+            }
+            .gym-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .cheatsheet-grid {
+                grid-template-columns: 1fr;
+            }
+            .vault-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .header-subtitle {
+                display: none;
+            }
+            .gym-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Clean Top Navigation -->
-  <header>
-    <div class="container header-inner">
-      <div class="brand">
-        <div class="brand-dot"></div>
-        <div>
-          <div class="brand-title">FocusOS</div>
-          <div class="brand-desc">Personal Operating System</div>
-        </div>
-      </div>
-
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <!-- Countdown Pill -->
-        <div class="status-pill" id="countdownTimer">
-          Loading countdown...
-        </div>
-
-        <!-- Native Village Mode Toggle -->
-        <button id="nativeModeToggle" class="btn">
-          <i data-lucide="compass" style="width: 14px; height: 14px; color: var(--accent);"></i>
-          <span>Native Mode: <b id="nativeModeStatus" style="color: var(--text-muted);">OFF</b></span>
-        </button>
-
-        <!-- Gemini API Setup -->
-        <button id="openApiSettingsBtn" class="btn" title="Setup Gemini Dual Keys">
-          <i data-lucide="key" style="width: 14px; height: 14px; color: var(--accent);"></i>
-          <span>Gemini Keys</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-
-    <!-- Native Village Travel Notice -->
-    <div id="nativeAlertBox" style="display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 14px; padding: 1.15rem 1.5rem; margin-bottom: 2.5rem; align-items: center; justify-content: space-between;">
-      <div>
-        <strong style="color: #1e40af; font-size: 0.9375rem;">Native Village Mode Active (3–4 Day Travel Protocol)</strong>
-        <p style="font-size: 0.84375rem; color: #1e3a8a; margin-top: 0.2rem;">Laptop coding paused. Focus on 15 minutes of mobile audio drills and LMS mental review so your streak stays alive.</p>
-      </div>
-      <button id="disableNativeAlertBtn" class="btn" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">Exit Mode</button>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- SECTION 1: TODAY'S EXECUTION CHECKLIST -->
-    <!-- ========================================================================= -->
-    <section>
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
-          <div>
-            <h2 class="card-title">
-              <i data-lucide="check-circle" style="width: 20px; height: 20px; color: var(--accent);"></i>
-              Today's Execution Checklist
-            </h2>
-            <p class="card-subtitle" style="margin-bottom: 0;">Complete these 4 reps before sleeping to maintain steady momentum.</p>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary); font-family: 'JetBrains Mono', monospace;" id="confidenceScoreVal">0%</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;" id="confidenceLevel">Ready to start</div>
-          </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="progress-bar-bg">
-          <div id="confidenceBar" class="progress-bar-fill" style="width: 0%;"></div>
-        </div>
-
-        <!-- The 4 Checkboxes -->
-        <div class="todo-list">
-          
-          <label class="todo-item" for="rep-lms">
-            <input type="checkbox" id="rep-lms" class="custom-checkbox">
-            <div class="todo-content">
-              <div class="todo-title">1. Office LMS Machine Learning</div>
-              <div class="todo-desc" id="lmsTaskDesc">Inspect the Pandas data pipeline or run LightGBM/Prophet scripts. Understand the code inputs and outputs.</div>
+    <header>
+        <div class="header-left">
+            <div class="logo-dot"></div>
+            <div>
+                <div class="header-title">FocusOS</div>
+                <div class="header-subtitle">Personal Execution System</div>
             </div>
-          </label>
-
-          <label class="todo-item" for="rep-udemy">
-            <input type="checkbox" id="rep-udemy" class="custom-checkbox">
-            <div class="todo-content">
-              <div class="todo-title">2. Udemy Track: Docker & Advanced AI</div>
-              <div class="todo-desc">30 minutes on Docker, Reflection Agents, Agentic RAG, or MCP. Write one snippet from memory.</div>
-            </div>
-          </label>
-
-          <label class="todo-item" for="rep-english">
-            <input type="checkbox" id="rep-english" class="custom-checkbox">
-            <div class="todo-content">
-              <div class="todo-title">3. 60-Second English Speaking Gym</div>
-              <div class="todo-desc">Speak 1 concept out loud using: Problem → Approach → Result → Next Step. Build fluent meeting poise.</div>
-            </div>
-          </label>
-
-          <label class="todo-item" for="rep-code">
-            <input type="checkbox" id="rep-code" class="custom-checkbox">
-            <div class="todo-content">
-              <div class="todo-title">4. Idea Discipline & Mindset</div>
-              <div class="todo-desc">Avoid opening new side projects today. Deposit any distracting ideas into the Backlog Vault below.</div>
-            </div>
-          </label>
-
         </div>
-
-        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-          <button id="resetDailyBtn" class="btn" style="font-size: 0.75rem; padding: 0.35rem 0.85rem;">
-            Reset Daily Reps
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- SECTION 2: 60-SECOND ENGLISH SPEAKING DRILL -->
-    <!-- ========================================================================= -->
-    <section class="section-gap">
-      <div class="card">
-        <h2 class="card-title">
-          <i data-lucide="mic" style="width: 20px; height: 20px; color: var(--accent);"></i>
-          60-Second English Speaking Gym
-        </h2>
-        <p class="card-subtitle">Train yourself to articulate technical choices without getting tongue-tied or going blank in meetings (Page 28).</p>
-
-        <!-- 4 Step Guide -->
-        <div class="four-steps-grid">
-          <div class="step-item">
-            <div class="step-label">Step 1 (15s)</div>
-            <div class="step-name">Problem</div>
-            <div class="step-desc">"The issue we faced..."</div>
-          </div>
-          <div class="step-item">
-            <div class="step-label">Step 2 (20s)</div>
-            <div class="step-name">Approach</div>
-            <div class="step-desc">"I solved it using..."</div>
-          </div>
-          <div class="step-item">
-            <div class="step-label">Step 3 (15s)</div>
-            <div class="step-name">Result</div>
-            <div class="step-desc">"This reduced/improved..."</div>
-          </div>
-          <div class="step-item">
-            <div class="step-label">Step 4 (10s)</div>
-            <div class="step-name">Next Step</div>
-            <div class="step-desc">"Next, we are..."</div>
-          </div>
-        </div>
-
-        <!-- Stopwatch Area -->
-        <div class="gym-stage">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 600; margin-bottom: 0.5rem;">
-            Active Practice Question
-          </div>
-          <div id="drillPrompt" class="speech-prompt-text">
-            "Explain why we selected LightGBM instead of standard Random Forest for the office LMS system."
-          </div>
-
-          <div class="timer-num" id="gymTimerDisplay">60</div>
-
-          <div style="display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1.75rem;">
-            <button id="startTimerBtn" class="btn btn-primary">
-              <i data-lucide="play" style="width: 15px; height: 15px;"></i> Start 60s Drill
+        <div class="header-right">
+            <div class="pill" id="countdown">Loading...</div>
+            <button class="btn-secondary" id="btn-native-mode">
+                <i data-lucide="moon"></i> <span id="native-mode-text">Native Mode</span>
             </button>
-            <button id="resetTimerBtn" class="btn">Reset</button>
-            <button id="nextPromptBtn" class="btn">
-              <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> New Prompt
+            <button class="btn-secondary btn-icon" id="btn-gemini-keys" aria-label="Gemini Keys">
+                <i data-lucide="key"></i>
             </button>
-          </div>
+        </div>
+    </header>
 
-          <!-- Notes & Gemini Evaluation -->
-          <div style="max-width: 580px; margin: 0 auto; text-align: left; padding-top: 1.25rem; border-top: 1px solid var(--border);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-              <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary);">Rough points spoken (for AI evaluation):</span>
-              <button id="speechMicBtn" style="background: transparent; border: none; color: var(--accent); font-size: 0.78125rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;">
-                <i data-lucide="mic" style="width: 14px; height: 14px;"></i> Use Mic
-              </button>
+    <div class="container">
+        <!-- Native Village Alert -->
+        <div class="alert" id="native-alert">
+            <div>
+                <strong>Native Mode Active</strong><br>
+                Heavy coding is paused for 3-4 day travel. Focus on reading, theory, and light repos.
             </div>
-            <textarea id="drillNotes" rows="2" class="input-field" placeholder="e.g. In the LMS, Random Forest had slow training. I picked LightGBM for histogram speed. We got 3x faster training. Next is API..."></textarea>
+            <button class="btn-secondary" id="btn-exit-native">Exit Mode</button>
+        </div>
+
+        <!-- Section 1: Today's Execution Checklist -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="check-circle" color="var(--accent)"></i>
+                <h2 class="section-title">Today's Execution Checklist</h2>
+            </div>
+            <p class="section-subtitle">Complete these 4 daily reps to maintain momentum.</p>
             
-            <div style="display: flex; justify-content: flex-end;">
-              <button id="critiqueDrillBtn" class="btn btn-primary" style="font-size: 0.78125rem; padding: 0.4rem 0.9rem;">
-                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> Get Gemini Feedback
-              </button>
+            <div class="card">
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <div class="confidence-label">Execution Confidence</div>
+                        <div class="confidence-val" id="confidence-val">0%</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-index="0" id="task-0">
+                    <div class="custom-checkbox">
+                        <i data-lucide="check"></i>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="checklist-title">1. Office LMS Machine Learning</div>
+                        <div class="checklist-desc" id="task-0-desc">Inspect Pandas pipeline or run LightGBM/Prophet scripts.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-index="1" id="task-1">
+                    <div class="custom-checkbox">
+                        <i data-lucide="check"></i>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="checklist-title">2. Udemy Track: Docker & Advanced AI</div>
+                        <div class="checklist-desc">30 minutes on Docker, Reflection Agents, Agentic RAG, or MCP.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-index="2" id="task-2">
+                    <div class="custom-checkbox">
+                        <i data-lucide="check"></i>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="checklist-title">3. 60-Second English Speaking Gym</div>
+                        <div class="checklist-desc">Speak 1 concept using Problem → Approach → Result → Next Step.</div>
+                    </div>
+                </div>
+
+                <div class="checklist-item" data-index="3" id="task-3">
+                    <div class="custom-checkbox">
+                        <i data-lucide="check"></i>
+                    </div>
+                    <div class="checklist-content">
+                        <div class="checklist-title">4. Idea Discipline & Mindset</div>
+                        <div class="checklist-desc">Don't start new side projects. Deposit ideas into the vault.</div>
+                    </div>
+                </div>
+
+                <div class="reset-btn-container">
+                    <button class="btn-secondary" id="btn-reset-reps">
+                        <i data-lucide="rotate-ccw" width="16" height="16"></i> Reset Daily Reps
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: 60-Second English Speaking Gym -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="mic" color="var(--accent)"></i>
+                <h2 class="section-title">60-Second English Speaking Gym</h2>
+            </div>
+            
+            <div class="gym-grid">
+                <div class="gym-step">
+                    <div class="gym-step-title">Problem</div>
+                    <div class="gym-step-time">15 seconds</div>
+                </div>
+                <div class="gym-step">
+                    <div class="gym-step-title">Approach</div>
+                    <div class="gym-step-time">20 seconds</div>
+                </div>
+                <div class="gym-step">
+                    <div class="gym-step-title">Result</div>
+                    <div class="gym-step-time">15 seconds</div>
+                </div>
+                <div class="gym-step">
+                    <div class="gym-step-title">Next Step</div>
+                    <div class="gym-step-time">10 seconds</div>
+                </div>
             </div>
 
-            <div id="drillFeedbackBox" style="display: none; margin-top: 1rem; padding: 1.25rem; background: #ffffff; border: 1px solid var(--border); border-radius: 12px; font-size: 0.84375rem; line-height: 1.55; box-shadow: 0 1px 3px rgba(0,0,0,0.03);"></div>
-          </div>
+            <div class="practice-area">
+                <div class="practice-label">Active Practice Question</div>
+                <div class="practice-prompt" id="practice-prompt">Loading prompt...</div>
+                
+                <div class="timer-display" id="timer-display">60</div>
+                
+                <div class="timer-controls">
+                    <button class="btn-primary" id="btn-timer-start">Start 60s Drill</button>
+                    <button class="btn-secondary" id="btn-timer-reset">Reset</button>
+                    <button class="btn-secondary" id="btn-timer-new">New Prompt</button>
+                </div>
 
-        </div>
-      </div>
-    </section>
+                <textarea id="gym-notes" placeholder="Transcribed text or notes will appear here..."></textarea>
+                
+                <div class="action-row">
+                    <button class="btn-secondary" id="btn-mic">
+                        <i data-lucide="mic"></i> <span id="mic-text">Use Mic</span>
+                    </button>
+                    <button class="btn-primary" id="btn-get-feedback">
+                        <i data-lucide="sparkles"></i> Get Gemini Feedback
+                    </button>
+                </div>
 
-    <!-- ========================================================================= -->
-    <!-- SECTION 3: OFFICE LMS QUICK REFERENCE -->
-    <!-- ========================================================================= -->
-    <section class="section-gap">
-      <div class="card">
-        <h2 class="card-title">
-          <i data-lucide="cpu" style="width: 20px; height: 20px; color: var(--accent);"></i>
-          Office LMS Machine Learning Cheatsheet
-        </h2>
-        <p class="card-subtitle">Keep these 3 models crystal clear so you can explain them effortlessly in office meetings (Pages 20–25).</p>
+                <div class="feedback-box" id="feedback-box"></div>
+            </div>
+        </section>
 
-        <div class="model-grid">
-          
-          <!-- LightGBM -->
-          <div class="model-box">
-            <div class="model-name">LightGBM</div>
-            <div class="model-tag">Gradient Boosted Trees</div>
-            <div class="model-point"><strong>Mechanism:</strong> Builds trees sequentially to correct previous errors.</div>
-            <div class="model-point"><strong>Why used:</strong> Extremely fast on tabular license rows; low memory usage.</div>
-            <div class="model-point"><strong>Output:</strong> Risk probability of license shortage.</div>
-          </div>
+        <!-- Section 3: Office LMS ML Cheatsheet -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="cpu" color="var(--accent)"></i>
+                <h2 class="section-title">Office LMS ML Cheatsheet</h2>
+            </div>
+            
+            <div class="cheatsheet-grid">
+                <div class="cs-card">
+                    <div class="cs-title">LightGBM</div>
+                    <ul class="cs-list">
+                        <li><span class="label">Type</span> Gradient Boosted Trees</li>
+                        <li><span class="label">Mechanism</span> Sequential error correction</li>
+                        <li><span class="label">Why</span> Fast on tabular data, low RAM</li>
+                        <li><span class="label">Output</span> License shortage risk</li>
+                    </ul>
+                </div>
+                <div class="cs-card">
+                    <div class="cs-title">Facebook Prophet</div>
+                    <ul class="cs-list">
+                        <li><span class="label">Type</span> Time-Series</li>
+                        <li><span class="label">Requires</span> Columns ds and y</li>
+                        <li><span class="label">Pattern</span> Weekly/monthly seasonality</li>
+                        <li><span class="label">Output</span> 30-90 day forecast</li>
+                    </ul>
+                </div>
+                <div class="cs-card">
+                    <div class="cs-title">Random Forest</div>
+                    <ul class="cs-list">
+                        <li><span class="label">Type</span> Bagging Ensemble</li>
+                        <li><span class="label">Mechanism</span> Parallel independent trees</li>
+                        <li><span class="label">Benefit</span> Hard to overfit</li>
+                        <li><span class="label">Output</span> Baseline prediction</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-          <!-- Prophet -->
-          <div class="model-box">
-            <div class="model-name">Facebook Prophet</div>
-            <div class="model-tag">Time-Series Forecasting</div>
-            <div class="model-point"><strong>Requirement:</strong> Strictly needs columns named <code>ds</code> (date) and <code>y</code> (value).</div>
-            <div class="model-point"><strong>Pattern:</strong> Models weekly weekend dips and recurring renewals.</div>
-            <div class="model-point"><strong>Output:</strong> Future license consumption forecast curve.</div>
-          </div>
-
-          <!-- Random Forest -->
-          <div class="model-box">
-            <div class="model-name">Random Forest</div>
-            <div class="model-tag">Bagging Ensemble</div>
-            <div class="model-point"><strong>Mechanism:</strong> Hundreds of independent trees voting together in parallel.</div>
-            <div class="model-point"><strong>Benefit:</strong> Solid default baseline, very hard to overfit.</div>
-            <div class="model-point"><strong>Output:</strong> Baseline classification or regression vote.</div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- SECTION 4: THE IDEA NARROWING VAULT -->
-    <!-- ========================================================================= -->
-    <section class="section-gap">
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-          <div>
-            <h2 class="card-title">
-              <i data-lucide="archive" style="width: 20px; height: 20px; color: var(--accent);"></i>
-              Project Idea Vault
-            </h2>
-            <p class="card-subtitle" style="margin-bottom: 0;">Preserves all concepts from your 52-page roadmap so you stay focused on today's LMS tasks without forgetting your future goals.</p>
-          </div>
-          <button id="addIdeaModalBtn" class="btn" style="font-size: 0.78125rem; padding: 0.4rem 0.9rem;">
-            <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Idea
-          </button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
-          
-          <!-- Icebox -->
-          <div style="background: #fafafa; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;">
-            <div style="font-size: 0.875rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;">📋 The Icebox (Next Up)</div>
-            <div style="font-size: 0.78125rem; color: var(--text-muted); margin-bottom: 1.25rem;">Products to build after the LMS is completed</div>
-            <div id="lane-icebox" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-          </div>
-
-          <!-- Horizon -->
-          <div style="background: #fafafa; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;">
-            <div style="font-size: 0.875rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;">🚀 2027+ Horizon (Moonshots)</div>
-            <div style="font-size: 0.78125rem; color: var(--text-muted); margin-bottom: 1.25rem;">Robotics (Jan 1), Custom Language, Foundation Models</div>
-            <div id="lane-horizon" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODAL: DUAL GEMINI KEYS -->
-  <div id="apiSettingsModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--text-primary);">Dual Gemini API Keys</h3>
-        <button id="closeApiSettingsBtn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;">
-          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
-        </button>
-      </div>
-      <p style="font-size: 0.84375rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
-        Add keys from your two Google accounts. If Key 1 hits limits, it automatically switches to Key 2. Keys stay safely in your browser.
-      </p>
-
-      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Google Account 1 Key (Primary)</label>
-      <input type="password" id="geminiKey1" class="input-field" placeholder="AIzaSy...">
-
-      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Google Account 2 Key (Backup)</label>
-      <input type="password" id="geminiKey2" class="input-field" placeholder="AIzaSy...">
-
-      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
-        <button id="saveApiKeysBtn" class="btn btn-primary" style="font-size: 0.84375rem;">Save Keys</button>
-      </div>
+        <!-- Section 4: Project Idea Vault -->
+        <section>
+            <div class="vault-header">
+                <div class="section-header" style="margin-bottom:0">
+                    <i data-lucide="archive" color="var(--accent)"></i>
+                    <h2 class="section-title" style="margin-bottom:0">Project Idea Vault</h2>
+                </div>
+                <button class="btn-primary" id="btn-add-idea">
+                    <i data-lucide="plus" width="16" height="16"></i> Add Idea
+                </button>
+            </div>
+            
+            <div class="vault-grid">
+                <div>
+                    <div class="lane-title">📋 The Icebox (Next Up)</div>
+                    <div class="idea-list" id="icebox-list"></div>
+                </div>
+                <div>
+                    <div class="lane-title">🚀 2027+ Horizon (Moonshots)</div>
+                    <div class="idea-list" id="horizon-list"></div>
+                </div>
+            </div>
+        </section>
     </div>
-  </div>
 
-  <!-- MODAL: ADD IDEA -->
-  <div id="addIdeaModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--text-primary);">Deposit Idea to Vault</h3>
-        <button id="closeIdeaModalBtn" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer;">
-          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
-        </button>
-      </div>
-      <p style="font-size: 0.84375rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
-        Store the idea so your brain can let go and stay 100% focused on today's LMS tasks.
-      </p>
-
-      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Idea Title</label>
-      <input type="text" id="newIdeaTitle" class="input-field" placeholder="e.g. Resume AI Agent">
-
-      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Description</label>
-      <textarea id="newIdeaDesc" rows="2" class="input-field" placeholder="What does it do?"></textarea>
-
-      <label style="font-size: 0.78125rem; color: var(--text-primary); font-weight: 600;">Vault Lane</label>
-      <select id="newIdeaLane" class="input-field">
-        <option value="icebox">📋 The Icebox (Post-LMS)</option>
-        <option value="horizon">🚀 2027+ Horizon (Robotics, New Language)</option>
-      </select>
-
-      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
-        <button id="saveNewIdeaBtn" class="btn btn-primary" style="font-size: 0.84375rem;">Save Idea</button>
-      </div>
+    <!-- Modals -->
+    <!-- Gemini Keys Modal -->
+    <div class="modal-overlay" id="modal-keys">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Dual Gemini API Keys</h3>
+                <button class="btn-icon btn-close-modal" aria-label="Close"><i data-lucide="x"></i></button>
+            </div>
+            <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:16px;">
+                If Key 1 hits rate limits, the system auto-switches to Key 2. Stored locally.
+            </p>
+            <div class="form-group">
+                <label class="form-label">Google Account 1 Key (Primary)</label>
+                <input type="password" class="form-input" id="key-1" placeholder="AIzaSy...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Google Account 2 Key (Backup)</label>
+                <input type="password" class="form-input" id="key-2" placeholder="AIzaSy...">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary btn-close-modal">Cancel</button>
+                <button class="btn-primary" id="btn-save-keys">Save Keys</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script src="app.js"></script>
+    <!-- Add Idea Modal -->
+    <div class="modal-overlay" id="modal-idea">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Idea to Vault</h3>
+                <button class="btn-icon btn-close-modal" aria-label="Close"><i data-lucide="x"></i></button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input" id="idea-title" placeholder="e.g. AI Habit Tracker">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="idea-desc" style="min-height:80px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Lane</label>
+                <select class="form-input" id="idea-lane">
+                    <option value="icebox">The Icebox (Next Up)</option>
+                    <option value="horizon">2027+ Horizon (Moonshots)</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary btn-close-modal">Cancel</button>
+                <button class="btn-primary" id="btn-save-idea">Save Idea</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Initial State
+        const defaultState = {
+            nativeMode: false,
+            tasks: [false, false, false, false],
+            keys: { key1: '', key2: '' },
+            ideas: {
+                icebox: [
+                    { title: "AI Job Application Agent", desc: "Automate resume tailoring and applications." },
+                    { title: "Direct Automation Freelancing", desc: "B2B local automation scripts." },
+                    { title: "Telegram Deal Bot", desc: "Monetized alerts for niche products." }
+                ],
+                horizon: [
+                    { title: "Robotics & Physical AI (Jan 1 Launch)", desc: "Build physical hardware controlled by LLMs." },
+                    { title: "Custom Programming Language", desc: "Syntax designed specifically for AI generation." },
+                    { title: "Story/Video Agent Factory", desc: "Fully automated Youtube channels." }
+                ]
+            }
+        };
+
+        const STORAGE_KEY = 'FOCUSOS_V3';
+        let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
+        
+        // Migrate old state structure if needed
+        if (!appState.tasks) appState.tasks = [false, false, false, false];
+        if (!appState.keys) appState.keys = { key1: '', key2: '' };
+        if (!appState.ideas) appState.ideas = defaultState.ideas;
+
+        const saveState = () => {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        };
+
+        // Date logic for Jan 1 2027
+        const targetDate = new Date('2027-01-01T00:00:00').getTime();
+        const countdownEl = document.getElementById('countdown');
+        
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            if (diff <= 0) {
+                countdownEl.textContent = '2027 has arrived';
+                return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            countdownEl.textContent = `${days} Days to 2027`;
+        };
+        setInterval(updateCountdown, 60000);
+        updateCountdown();
+
+        // Native Mode Logic
+        const nativeAlertEl = document.getElementById('native-alert');
+        const nativeModeText = document.getElementById('native-mode-text');
+        const task0Desc = document.getElementById('task-0-desc');
+        
+        const updateNativeModeUI = () => {
+            if (appState.nativeMode) {
+                nativeAlertEl.classList.add('active');
+                nativeModeText.textContent = 'Native Mode ON';
+                task0Desc.textContent = 'Read ML theories / review local snippets (Native Mode).';
+            } else {
+                nativeAlertEl.classList.remove('active');
+                nativeModeText.textContent = 'Native Mode';
+                task0Desc.textContent = 'Inspect Pandas pipeline or run LightGBM/Prophet scripts.';
+            }
+        };
+        
+        document.getElementById('btn-native-mode').addEventListener('click', () => {
+            appState.nativeMode = !appState.nativeMode;
+            saveState();
+            updateNativeModeUI();
+        });
+        
+        document.getElementById('btn-exit-native').addEventListener('click', () => {
+            appState.nativeMode = false;
+            saveState();
+            updateNativeModeUI();
+        });
+        
+        updateNativeModeUI();
+
+        // Checklist Logic
+        const confidenceVal = document.getElementById('confidence-val');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const checklistItems = document.querySelectorAll('.checklist-item');
+        
+        const updateChecklistUI = () => {
+            let checkedCount = 0;
+            checklistItems.forEach((item, index) => {
+                if (appState.tasks[index]) {
+                    item.classList.add('checked');
+                    checkedCount++;
+                } else {
+                    item.classList.remove('checked');
+                }
+            });
+            const percent = (checkedCount / 4) * 100;
+            confidenceVal.textContent = `${Math.round(percent)}%`;
+            progressBarFill.style.width = `${percent}%`;
+        };
+
+        checklistItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const idx = parseInt(item.getAttribute('data-index'));
+                appState.tasks[idx] = !appState.tasks[idx];
+                saveState();
+                updateChecklistUI();
+            });
+        });
+
+        document.getElementById('btn-reset-reps').addEventListener('click', () => {
+            appState.tasks = [false, false, false, false];
+            saveState();
+            updateChecklistUI();
+        });
+        
+        updateChecklistUI();
+
+        // Gym Logic
+        const prompts = [
+            "Explain why we selected LightGBM instead of standard Random Forest for the office LMS system.",
+            "Describe how you solved a data transformation bug in a Pandas pipeline.",
+            "Explain how Facebook Prophet handles weekly weekend drops in license usage.",
+            "Explain what Model Context Protocol (MCP) is and why it replaces custom API connectors.",
+            "Explain why we use Docker port mapping (-p 8000:8000) for local container testing."
+        ];
+        
+        const promptEl = document.getElementById('practice-prompt');
+        const timerDisplay = document.getElementById('timer-display');
+        let currentPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+        promptEl.textContent = currentPrompt;
+        
+        document.getElementById('btn-timer-new').addEventListener('click', () => {
+            currentPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            promptEl.textContent = currentPrompt;
+            resetTimer();
+        });
+        
+        let timerInterval;
+        let timeLeft = 60;
+        let isRunning = false;
+        
+        const updateTimerUI = () => {
+            timerDisplay.textContent = timeLeft;
+        };
+        
+        const startTimer = () => {
+            if (isRunning) return;
+            isRunning = true;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    // Auto-check rep 3
+                    appState.tasks[2] = true;
+                    saveState();
+                    updateChecklistUI();
+                }
+            }, 1000);
+        };
+        
+        const resetTimer = () => {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 60;
+            updateTimerUI();
+        };
+        
+        document.getElementById('btn-timer-start').addEventListener('click', startTimer);
+        document.getElementById('btn-timer-reset').addEventListener('click', resetTimer);
+
+        // Speech Recognition
+        const btnMic = document.getElementById('btn-mic');
+        const micText = document.getElementById('mic-text');
+        const gymNotes = document.getElementById('gym-notes');
+        let recognition = null;
+        let isRecording = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRec();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onstart = () => {
+                isRecording = true;
+                micText.textContent = "Listening...";
+                btnMic.style.color = "red";
+            };
+            
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if (finalTranscript) {
+                    gymNotes.value += (gymNotes.value ? " " : "") + finalTranscript;
+                }
+            };
+            
+            recognition.onend = () => {
+                isRecording = false;
+                micText.textContent = "Use Mic";
+                btnMic.style.color = "inherit";
+            };
+            
+            btnMic.addEventListener('click', () => {
+                if (isRecording) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+        } else {
+            btnMic.addEventListener('click', () => {
+                alert("Speech recognition not supported in this browser.");
+            });
+        }
+
+        // Gemini Feedback Logic
+        const btnGetFeedback = document.getElementById('btn-get-feedback');
+        const feedbackBox = document.getElementById('feedback-box');
+        
+        btnGetFeedback.addEventListener('click', async () => {
+            const text = gymNotes.value.trim();
+            if (!text) {
+                alert("Please write or speak something first.");
+                return;
+            }
+            
+            feedbackBox.style.display = 'block';
+            feedbackBox.textContent = "Analyzing response...";
+            
+            const key1 = appState.keys.key1;
+            const key2 = appState.keys.key2;
+            
+            if (!key1 && !key2) {
+                // Offline fallback
+                setTimeout(() => {
+                    feedbackBox.innerHTML = `<strong>Offline Feedback Mode:</strong><br><br>You spoke about: "${text.substring(0, 50)}..."<br><br>Self-Correction Checklist:<br>1. Did you clearly state the problem?<br>2. Was the approach logical?<br>3. Did you quantify the result?<br>4. Is the next step actionable?<br><br><em>(Add Gemini Keys in header for AI feedback)</em>`;
+                }, 800);
+                return;
+            }
+            
+            const callGemini = async (key) => {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `You are an expert communication coach. Review this response to the prompt: "${currentPrompt}". \n\nResponse: "${text}"\n\nProvide brief, direct feedback based on the Problem-Approach-Result-Next Step framework. Point out 1 strength and 1 area to improve.`
+                            }]
+                        }]
+                    })
+                });
+                if (!response.ok) throw new Error('API Error');
+                return await response.json();
+            };
+            
+            try {
+                let data;
+                try {
+                    data = await callGemini(key1);
+                } catch (e) {
+                    console.warn("Key 1 failed, trying Key 2");
+                    if(key2) {
+                        data = await callGemini(key2);
+                    } else {
+                        throw e;
+                    }
+                }
+                const feedbackText = data.candidates[0].content.parts[0].text;
+                feedbackBox.innerHTML = `<strong>Gemini Feedback:</strong><br><br>${feedbackText.replace(/\n/g, '<br>')}`;
+            } catch (err) {
+                feedbackBox.textContent = "Error reaching Gemini API. Check your keys or network.";
+            }
+        });
+
+        // Modals Logic
+        const modalKeys = document.getElementById('modal-keys');
+        const modalIdea = document.getElementById('modal-idea');
+        
+        const closeAllModals = () => {
+            modalKeys.classList.remove('active');
+            modalIdea.classList.remove('active');
+        };
+        
+        document.querySelectorAll('.btn-close-modal').forEach(btn => {
+            btn.addEventListener('click', closeAllModals);
+        });
+        
+        document.getElementById('btn-gemini-keys').addEventListener('click', () => {
+            document.getElementById('key-1').value = appState.keys.key1 || '';
+            document.getElementById('key-2').value = appState.keys.key2 || '';
+            modalKeys.classList.add('active');
+        });
+        
+        document.getElementById('btn-save-keys').addEventListener('click', () => {
+            appState.keys.key1 = document.getElementById('key-1').value;
+            appState.keys.key2 = document.getElementById('key-2').value;
+            saveState();
+            closeAllModals();
+        });
+        
+        document.getElementById('btn-add-idea').addEventListener('click', () => {
+            document.getElementById('idea-title').value = '';
+            document.getElementById('idea-desc').value = '';
+            modalIdea.classList.add('active');
+        });
+
+        // Vault Logic
+        const iceboxList = document.getElementById('icebox-list');
+        const horizonList = document.getElementById('horizon-list');
+        
+        const renderVault = () => {
+            const createCardHTML = (idea) => `
+                <div class="idea-card">
+                    <div class="idea-title">${idea.title}</div>
+                    <div class="idea-desc">${idea.desc}</div>
+                </div>
+            `;
+            
+            iceboxList.innerHTML = appState.ideas.icebox.map(createCardHTML).join('');
+            horizonList.innerHTML = appState.ideas.horizon.map(createCardHTML).join('');
+        };
+        
+        document.getElementById('btn-save-idea').addEventListener('click', () => {
+            const title = document.getElementById('idea-title').value.trim();
+            const desc = document.getElementById('idea-desc').value.trim();
+            const lane = document.getElementById('idea-lane').value;
+            
+            if (title && desc) {
+                appState.ideas[lane].push({ title, desc });
+                saveState();
+                renderVault();
+                closeAllModals();
+            }
+        });
+        
+        renderVault();
+    </script>
 </body>
 </html>
