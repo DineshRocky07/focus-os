@@ -568,6 +568,52 @@
             gap: 12px;
         }
 
+        /* Journal */
+        .journal-history { margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px; }
+        .journal-entry { margin-bottom: 12px; }
+        .journal-date { font-weight: 600; font-size: 0.875rem; }
+        .journal-text { font-size: 0.875rem; color: var(--text-secondary); }
+
+        /* Streak Grid */
+        .streak-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-bottom: 16px; }
+        .streak-square { width: 100%; aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
+        .streak-square.completed { background-color: var(--accent); opacity: 0.8; }
+        .streak-square.missed { background-color: #E5E7EB; color: var(--text-secondary); }
+        .streak-square.today { border: 2px solid var(--accent); color: var(--text-primary); }
+        .streak-square.completed.today { color: white; }
+        .streak-counter { font-weight: 600; }
+
+        /* Course Tracker */
+        .courses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .course-card { background-color: white; border: 1px solid var(--border-color); border-radius: var(--border-radius-card); padding: 16px; }
+        .course-title { font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; }
+        .course-progress-text { font-size: 0.75rem; color: var(--text-secondary); }
+        .course-progress-bar-bg { height: 4px; background-color: var(--border-color); border-radius: 4px; margin-bottom: 12px; }
+        .course-progress-bar-fill { height: 100%; background-color: var(--accent); border-radius: 4px; transition: width 0.3s; }
+        .course-task { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; cursor: pointer; }
+        .course-task .custom-checkbox { width: 16px; height: 16px; margin-top: 2px; }
+        .course-task .custom-checkbox i { width: 10px; height: 10px; }
+        .course-task-text { font-size: 0.75rem; color: var(--text-secondary); flex: 1; }
+        .course-task.checked .course-task-text { text-decoration: line-through; color: var(--text-muted); }
+
+        /* Code Log */
+        .code-display { font-family: var(--font-mono); font-size: 3rem; font-weight: 700; text-align: center; margin-bottom: 16px; }
+        .code-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 16px; }
+        .code-reset { text-align: center; font-size: 0.75rem; color: var(--text-secondary); cursor: pointer; text-decoration: underline; margin-bottom: 16px; display: block; border: none; background: none; width: 100%; }
+        .code-summary { text-align: center; font-weight: 500; font-size: 0.875rem; }
+
+        /* AI Advisor */
+        .advisor-response { margin-top: 16px; background-color: white; border: 1px solid var(--border-color); border-radius: var(--border-radius-btn); padding: 16px; font-size: 0.875rem; display: none; white-space: pre-wrap; }
+        
+        /* Resource Links */
+        .links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .link-card { display: flex; align-items: center; gap: 8px; background-color: white; border: 1px solid var(--border-color); border-radius: var(--border-radius-btn); padding: 12px 16px; text-decoration: none; color: var(--text-primary); font-weight: 500; transition: all 0.15s ease; font-size: 0.875rem; }
+        .link-card:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* Weekly Reflection */
+        .reflection-card { margin-bottom: 16px; }
+        .reflection-label { font-weight: 500; margin-bottom: 8px; font-size: 0.875rem; }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-right .pill {
@@ -582,12 +628,21 @@
             .vault-grid {
                 grid-template-columns: 1fr;
             }
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            .links-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         @media (max-width: 480px) {
             .header-subtitle {
                 display: none;
             }
             .gym-grid {
+                grid-template-columns: 1fr;
+            }
+            .links-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -804,6 +859,121 @@
                 </div>
             </div>
         </section>
+
+        <!-- Section 5: Daily Learning Journal -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="book-open" color="var(--accent)"></i>
+                <h2 class="section-title">Daily Learning Journal</h2>
+            </div>
+            <p class="section-subtitle">Write one thing you genuinely understood today. This builds real retention.</p>
+            <div class="card">
+                <div class="journal-date" id="journal-today-date" style="margin-bottom: 8px;"></div>
+                <textarea id="journal-input" placeholder="What did I actually learn or build today? Be specific..."></textarea>
+                <button class="btn-primary" id="btn-save-journal">Save Today's Entry</button>
+                <div class="journal-history" id="journal-history"></div>
+            </div>
+        </section>
+
+        <!-- Section 6: 30-Day Streak Calendar -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="calendar" color="var(--accent)"></i>
+                <h2 class="section-title">Execution Streak</h2>
+            </div>
+            <p class="section-subtitle">Green = completed all 4 reps that day. Stay consistent.</p>
+            <div class="card">
+                <div class="streak-grid" id="streak-grid"></div>
+                <div class="streak-counter" id="streak-counter">Current streak: 0 days</div>
+            </div>
+        </section>
+
+        <!-- Section 7: Udemy & Advanced AI Course Tracker -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="graduation-cap" color="var(--accent)"></i>
+                <h2 class="section-title">Course Progress Tracker</h2>
+            </div>
+            <p class="section-subtitle">Track specific modules across your active Udemy courses.</p>
+            <div class="courses-grid" id="courses-grid">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- Section 8: Code Independence Log -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="code" color="var(--accent)"></i>
+                <h2 class="section-title">Code Independence Score</h2>
+            </div>
+            <p class="section-subtitle">Track lines of code you wrote from scratch without AI assistance. Build real coding muscle.</p>
+            <div class="card">
+                <div class="code-display" id="code-count">0</div>
+                <div class="code-buttons">
+                    <button class="btn-secondary" id="btn-code-add-5">+5 lines</button>
+                    <button class="btn-secondary" id="btn-code-add-10">+10 lines</button>
+                </div>
+                <button class="code-reset" id="btn-code-reset">Reset Today</button>
+                <div class="code-summary" id="code-weekly">This week: 0 total lines</div>
+            </div>
+        </section>
+
+        <!-- Section 9: AI Daily Task Suggestion -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="sparkles" color="var(--accent)"></i>
+                <h2 class="section-title">AI Task Advisor</h2>
+            </div>
+            <p class="section-subtitle">Get a specific, actionable micro-task suggestion for today based on your current sprint.</p>
+            <div class="card">
+                <button class="btn-primary" id="btn-get-advisor">Generate Today's Task</button>
+                <div class="advisor-response" id="advisor-response"></div>
+            </div>
+        </section>
+
+        <!-- Section 10: Quick Resource Links -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="link" color="var(--accent)"></i>
+                <h2 class="section-title">Quick Resources</h2>
+            </div>
+            <div class="links-grid">
+                <a href="https://www.udemy.com" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> Udemy Dashboard</a>
+                <a href="https://console.cloud.google.com/bigquery" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> Google BigQuery</a>
+                <a href="https://backstage.io" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> Backstage</a>
+                <a href="https://lightgbm.readthedocs.io" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> LightGBM Docs</a>
+                <a href="https://facebook.github.io/prophet" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> Prophet Docs</a>
+                <a href="https://docs.docker.com" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> Docker Docs</a>
+                <a href="https://langchain-ai.github.io/langgraph" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> LangGraph Docs</a>
+                <a href="https://scikit-learn.org" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> Scikit-Learn</a>
+                <a href="https://modelcontextprotocol.io" target="_blank" class="link-card"><i data-lucide="external-link" width="16" height="16"></i> MCP Spec</a>
+            </div>
+        </section>
+
+        <!-- Section 11: Weekly Reflection & Export -->
+        <section>
+            <div class="section-header">
+                <i data-lucide="file-text" color="var(--accent)"></i>
+                <h2 class="section-title">Weekly Reflection & Export</h2>
+            </div>
+            <div class="card" id="reflection-container">
+                <div class="reflection-card" id="reflection-prompt">
+                    <div class="reflection-label">What went well this week?</div>
+                    <textarea id="reflect-well" rows="2" style="min-height: 60px;"></textarea>
+                    <div class="reflection-label">What was my biggest blocker?</div>
+                    <textarea id="reflect-blocker" rows="2" style="min-height: 60px;"></textarea>
+                    <div class="reflection-label">What will I focus on next week?</div>
+                    <textarea id="reflect-focus" rows="2" style="min-height: 60px;"></textarea>
+                    <button class="btn-primary" id="btn-save-reflection" style="margin-bottom: 24px;">Save Reflection</button>
+                </div>
+                <button class="btn-secondary" id="btn-export-report">
+                    <i data-lucide="download" width="16" height="16"></i> Export Weekly Report
+                </button>
+                <button class="btn-secondary" id="btn-toggle-reflection" style="margin-left: 8px;">
+                    Write Reflection
+                </button>
+            </div>
+        </section>
     </div>
 
     <!-- Modals -->
@@ -881,7 +1051,12 @@
                     { title: "Custom Programming Language", desc: "Syntax designed specifically for AI generation." },
                     { title: "Story/Video Agent Factory", desc: "Fully automated Youtube channels." }
                 ]
-            }
+            },
+            journal: {},
+            streakLog: {},
+            courses: { docker: [false,false,false], reflection: [false,false,false], rag: [false,false,false], mcp: [false,false,false] },
+            codeLog: {},
+            reflections: {}
         };
 
         const STORAGE_KEY = 'FOCUSOS_V3';
@@ -891,6 +1066,11 @@
         if (!appState.tasks) appState.tasks = [false, false, false, false];
         if (!appState.keys) appState.keys = { key1: '', key2: '' };
         if (!appState.ideas) appState.ideas = defaultState.ideas;
+        if (!appState.journal) appState.journal = {};
+        if (!appState.streakLog) appState.streakLog = {};
+        if (!appState.courses) appState.courses = { docker: [false,false,false], reflection: [false,false,false], rag: [false,false,false], mcp: [false,false,false] };
+        if (!appState.codeLog) appState.codeLog = {};
+        if (!appState.reflections) appState.reflections = {};
 
         // Auto-inject Gemini API keys from GitHub Secrets (replaced at deploy time)
         // If the placeholders are still present, they are treated as empty strings
@@ -1219,6 +1399,361 @@
         });
         
         renderVault();
+
+        // ---------------- NEW SECTIONS LOGIC ----------------
+
+        const getTodayDateStr = () => {
+            const d = new Date();
+            const offset = d.getTimezoneOffset();
+            const local = new Date(d.getTime() - (offset*60*1000));
+            return local.toISOString().split('T')[0];
+        };
+
+        const todayStr = getTodayDateStr();
+
+        // Section 5: Daily Learning Journal
+        const journalTodayDate = document.getElementById('journal-today-date');
+        const journalInput = document.getElementById('journal-input');
+        const journalHistory = document.getElementById('journal-history');
+        
+        const renderJournal = () => {
+            const d = new Date();
+            journalTodayDate.textContent = d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            
+            if (appState.journal[todayStr]) {
+                journalInput.value = appState.journal[todayStr];
+            } else {
+                journalInput.value = '';
+            }
+
+            const entries = Object.keys(appState.journal)
+                .sort((a, b) => new Date(b) - new Date(a))
+                .slice(0, 7);
+            
+            if (entries.length > 0) {
+                journalHistory.innerHTML = entries.map(date => {
+                    const text = appState.journal[date];
+                    return `<div class="journal-entry"><div class="journal-date">${date}</div><div class="journal-text">${text}</div></div>`;
+                }).join('');
+            } else {
+                journalHistory.innerHTML = '<div class="journal-text">No past entries yet.</div>';
+            }
+        };
+
+        document.getElementById('btn-save-journal').addEventListener('click', () => {
+            const text = journalInput.value.trim();
+            if (text) {
+                appState.journal[todayStr] = text;
+                saveState();
+                renderJournal();
+            }
+        });
+
+        renderJournal();
+
+        // Section 6: Streak Calendar
+        const streakGrid = document.getElementById('streak-grid');
+        const streakCounter = document.getElementById('streak-counter');
+
+        const updateStreakIfTasksDone = () => {
+            const allTasksDone = appState.tasks.every(t => t);
+            if (allTasksDone) {
+                appState.streakLog[todayStr] = true;
+            } else {
+                appState.streakLog[todayStr] = false;
+            }
+            saveState();
+            renderStreak();
+        };
+
+        const renderStreak = () => {
+            const days = [];
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const offset = d.getTimezoneOffset();
+                const local = new Date(d.getTime() - (offset*60*1000));
+                const dateStr = local.toISOString().split('T')[0];
+                days.push({
+                    dateStr,
+                    dayNum: d.getDate(),
+                    completed: appState.streakLog[dateStr] === true
+                });
+            }
+
+            streakGrid.innerHTML = days.map(d => {
+                const isToday = d.dateStr === todayStr;
+                let classes = 'streak-square';
+                if (d.completed) classes += ' completed';
+                else if (!isToday && appState.streakLog[d.dateStr] !== undefined) classes += ' missed';
+                if (isToday) classes += ' today';
+                return `<div class="${classes}">${d.dayNum}</div>`;
+            }).join('');
+
+            let streak = 0;
+            let checkDate = new Date();
+            while (true) {
+                const offset = checkDate.getTimezoneOffset();
+                const local = new Date(checkDate.getTime() - (offset*60*1000));
+                const dateStr = local.toISOString().split('T')[0];
+                
+                const isCompleted = appState.streakLog[dateStr] === true;
+                if (dateStr === todayStr) {
+                    if (isCompleted) streak++;
+                } else {
+                    if (isCompleted) streak++;
+                    else break;
+                }
+                checkDate.setDate(checkDate.getDate() - 1);
+            }
+            
+            streakCounter.textContent = `Current streak: ${streak} days`;
+        };
+
+        renderStreak();
+
+        checklistItems.forEach(item => {
+            item.addEventListener('click', () => {
+                setTimeout(updateStreakIfTasksDone, 50);
+            });
+        });
+
+        // Section 7: Course Tracker
+        const coursesGrid = document.getElementById('courses-grid');
+        const courseData = [
+            { id: 'docker', title: 'Docker Fundamentals', tasks: ['Write a Dockerfile for Python/FastAPI', 'Port mapping (-p 8000:8000) and volumes', 'Docker Compose with App + Postgres'] },
+            { id: 'reflection', title: 'Reflection Agents', tasks: ['Actor → Critic → Optimizer loop concept', 'Build LangGraph cyclic graph', 'Add stopping criteria for cost control'] },
+            { id: 'rag', title: 'Agentic RAG', tasks: ['Route queries: SQL vs Vector search', 'Document Grader (filter hallucinated chunks)', 'Connect to Office LMS knowledge base'] },
+            { id: 'mcp', title: 'MCP (Model Context Protocol)', tasks: ['MCP Server vs Client architecture', 'Build Python MCP server for license queries', 'Test tool calling via JSON-RPC'] }
+        ];
+
+        const renderCourses = () => {
+            coursesGrid.innerHTML = courseData.map(c => {
+                const state = appState.courses[c.id];
+                const checkedCount = state.filter(x => x).length;
+                const total = c.tasks.length;
+                const percent = (checkedCount / total) * 100;
+                
+                let tasksHtml = c.tasks.map((taskText, idx) => `
+                    <div class="course-task ${state[idx] ? 'checked' : ''}" data-course="${c.id}" data-idx="${idx}">
+                        <div class="custom-checkbox"><i data-lucide="check"></i></div>
+                        <div class="course-task-text">${taskText}</div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="course-card">
+                        <div class="course-title">
+                            <span>${c.title}</span>
+                            <span class="course-progress-text">${checkedCount}/${total} completed</span>
+                        </div>
+                        <div class="course-progress-bar-bg">
+                            <div class="course-progress-bar-fill" style="width: ${percent}%"></div>
+                        </div>
+                        <div class="course-tasks">${tasksHtml}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.querySelectorAll('.course-task').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    const courseId = el.getAttribute('data-course');
+                    const idx = parseInt(el.getAttribute('data-idx'));
+                    appState.courses[courseId][idx] = !appState.courses[courseId][idx];
+                    saveState();
+                    renderCourses();
+                });
+            });
+            lucide.createIcons();
+        };
+
+        renderCourses();
+
+        // Section 8: Code Independence Log
+        const codeCountDisplay = document.getElementById('code-count');
+        const codeWeeklySummary = document.getElementById('code-weekly');
+
+        const updateCodeLogUI = () => {
+            const todayCount = appState.codeLog[todayStr] || 0;
+            codeCountDisplay.textContent = todayCount;
+
+            let weekly = 0;
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const offset = d.getTimezoneOffset();
+                const local = new Date(d.getTime() - (offset*60*1000));
+                const dateStr = local.toISOString().split('T')[0];
+                weekly += appState.codeLog[dateStr] || 0;
+            }
+            codeWeeklySummary.textContent = `This week: ${weekly} total lines`;
+        };
+
+        const addCodeLines = (lines) => {
+            const current = appState.codeLog[todayStr] || 0;
+            appState.codeLog[todayStr] = current + lines;
+            saveState();
+            updateCodeLogUI();
+        };
+
+        document.getElementById('btn-code-add-5').addEventListener('click', () => addCodeLines(5));
+        document.getElementById('btn-code-add-10').addEventListener('click', () => addCodeLines(10));
+        document.getElementById('btn-code-reset').addEventListener('click', () => {
+            appState.codeLog[todayStr] = 0;
+            saveState();
+            updateCodeLogUI();
+        });
+
+        updateCodeLogUI();
+
+        // Section 9: AI Advisor
+        const fallbackTasks = [
+            "Review LightGBM docs and write a small script to train on dummy data.",
+            "Set up a Dockerfile for a FastAPI Python project and map port 8000.",
+            "Write down 3 problem-approach-result stories for the 60s English gym.",
+            "Review LangGraph documentation on cycles and state management.",
+            "Implement a basic Prophet time-series model on fake usage data.",
+            "Review the MCP spec and write a pseudo-code server."
+        ];
+
+        document.getElementById('btn-get-advisor').addEventListener('click', async () => {
+            const advisorRes = document.getElementById('advisor-response');
+            advisorRes.style.display = 'block';
+            advisorRes.textContent = "Generating suggestion...";
+
+            const key1 = appState.keys.key1;
+            const key2 = appState.keys.key2;
+
+            if (!key1 && !key2) {
+                setTimeout(() => {
+                    const task = fallbackTasks[Math.floor(Math.random() * fallbackTasks.length)];
+                    advisorRes.innerHTML = `<strong>Suggested Task:</strong><br><br>${task}<br><br><em>(Add Gemini Keys for AI-generated tasks)</em>`;
+                }, 800);
+                return;
+            }
+
+            const callGemini = async (key) => {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: "You are a senior engineering mentor. Based on this engineer's current sprint (Office LMS with LightGBM, Prophet, Random Forest; Udemy courses on Docker, Reflection Agents, Agentic RAG, MCP; 60-second English speaking practice), suggest ONE specific, actionable 30-minute task they should do today. Be concrete and practical. Format: Task title in bold, then 2-3 sentences describing exactly what to do."
+                            }]
+                        }]
+                    })
+                });
+                if (!response.ok) throw new Error('API Error');
+                return await response.json();
+            };
+
+            try {
+                let data;
+                try {
+                    data = await callGemini(key1);
+                } catch (e) {
+                    if (key2) data = await callGemini(key2);
+                    else throw e;
+                }
+                const text = data.candidates[0].content.parts[0].text;
+                advisorRes.innerHTML = text.replace(/\n/g, '<br>');
+            } catch (err) {
+                const task = fallbackTasks[Math.floor(Math.random() * fallbackTasks.length)];
+                advisorRes.innerHTML = `<strong>API Error. Fallback Task:</strong><br><br>${task}`;
+            }
+        });
+
+        // Section 11: Weekly Reflection
+        const reflectionPrompt = document.getElementById('reflection-prompt');
+        const refWell = document.getElementById('reflect-well');
+        const refBlocker = document.getElementById('reflect-blocker');
+        const refFocus = document.getElementById('reflect-focus');
+        
+        const getWeekStr = () => {
+            const d = new Date();
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+            const week1 = new Date(d.getFullYear(), 0, 4);
+            const weekNum = 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+            return `${d.getFullYear()}-W${weekNum}`;
+        };
+
+        const currentWeekStr = getWeekStr();
+
+        const loadReflection = () => {
+            const data = appState.reflections[currentWeekStr];
+            if (data) {
+                refWell.value = data.well || '';
+                refBlocker.value = data.blocker || '';
+                refFocus.value = data.focus || '';
+            }
+        };
+
+        document.getElementById('btn-toggle-reflection').addEventListener('click', () => {
+            if (reflectionPrompt.classList.contains('active')) {
+                reflectionPrompt.classList.remove('active');
+            } else {
+                reflectionPrompt.classList.add('active');
+                loadReflection();
+            }
+        });
+
+        document.getElementById('btn-save-reflection').addEventListener('click', () => {
+            appState.reflections[currentWeekStr] = {
+                well: refWell.value,
+                blocker: refBlocker.value,
+                focus: refFocus.value
+            };
+            saveState();
+            reflectionPrompt.classList.remove('active');
+            alert('Reflection saved for this week.');
+        });
+
+        if (new Date().getDay() === 0) {
+            reflectionPrompt.classList.add('active');
+            loadReflection();
+        }
+
+        document.getElementById('btn-export-report').addEventListener('click', () => {
+            let report = `FocusOS Weekly Report - ${currentWeekStr}\n\n`;
+            
+            report += `Streak: ${streakCounter.textContent}\n\n`;
+            report += `Code Independence: ${codeWeeklySummary.textContent}\n\n`;
+
+            report += `Journal Entries (Last 7 Days):\n`;
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const offset = d.getTimezoneOffset();
+                const local = new Date(d.getTime() - (offset*60*1000));
+                const dateStr = local.toISOString().split('T')[0];
+                if (appState.journal[dateStr]) {
+                    report += `- ${dateStr}: ${appState.journal[dateStr]}\n`;
+                }
+            }
+            report += `\n`;
+
+            const refData = appState.reflections[currentWeekStr];
+            if (refData) {
+                report += `Weekly Reflection:\n`;
+                report += `Went well: ${refData.well}\n`;
+                report += `Blocker: ${refData.blocker}\n`;
+                report += `Focus: ${refData.focus}\n`;
+            } else {
+                report += `No reflection saved for this week.\n`;
+            }
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `focusos-report-${currentWeekStr}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        lucide.createIcons();
     </script>
 </body>
 </html>
