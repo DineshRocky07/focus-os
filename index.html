@@ -892,6 +892,17 @@
         if (!appState.keys) appState.keys = { key1: '', key2: '' };
         if (!appState.ideas) appState.ideas = defaultState.ideas;
 
+        // Auto-inject Gemini API keys from GitHub Secrets (replaced at deploy time)
+        // If the placeholders are still present, they are treated as empty strings
+        const _injectedKey1 = '__GEMINI_KEY_1__';
+        const _injectedKey2 = '__GEMINI_KEY_2__';
+        if (_injectedKey1 && !_injectedKey1.startsWith('__')) {
+            appState.keys.key1 = _injectedKey1;
+        }
+        if (_injectedKey2 && !_injectedKey2.startsWith('__')) {
+            appState.keys.key2 = _injectedKey2;
+        }
+
         const saveState = () => {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
         };
