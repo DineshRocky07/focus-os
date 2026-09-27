@@ -1,0 +1,17 @@
+{
+  "name": "FocusOS",
+  "short_name": "FocusOS",
+  "description": "Personal Career Operating System & Execution Dashboard",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://api.iconify.design/lucide:target.svg?color=%232563eb",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
